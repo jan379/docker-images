@@ -69,9 +69,31 @@ else echo "Could not find mysqldump util"
   exit 1
 fi
 
+bacckup(){
 mkdir /root/backup
 if mysqldump -h"${MYSQL_HOST}" -p"${MYSQL_PASSWORD}" -u"${MYSQL_USER}" "${MYSQL_DB}" > /root/backup/bigdump.sql ; then
   echo "prepared a new dump, try to sync to s3://${S3_BUCKET}"
   s3cmd --access_key=${S3_KEY} --secret_key=${S3_SECRET} sync /root/backup/ s3://${S3_BUCKET}/database/
 fi
+}
+
+restore(){
+mkdir /root/backup
+s3cmd --access_key=${S3_KEY} --secret_key=${S3_SECRET} sync s3://${S3_BUCKET}/database/ /root/backup/
+if mysql -h"${MYSQL_HOST}" -p"${MYSQL_PASSWORD}" -u"${MYSQL_USER}" "${MYSQL_DB}" < /root/backup/bigdump.sql ; then
+  echo "successfully restored mysql database from s3://${S3_BUCKET}"
+fi
+}
+
+case "$1" in
+  --restore)
+  restore
+  ;;
+  --backup)
+  backup
+  ;;
+  *)
+  backup
+  ;;
+esac
 
