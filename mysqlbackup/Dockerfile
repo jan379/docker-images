@@ -10,5 +10,3 @@ COPY mysql-backup.sh /usr/local/bin/
 COPY s3config /root/.s3cfg
 
 RUN chmod 500 /usr/local/bin/mysql-backup.sh
-
-CMD ["mysql-backup.sh"]
