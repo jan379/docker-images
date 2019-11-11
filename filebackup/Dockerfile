@@ -8,4 +8,3 @@ COPY s3config /root/.s3cfg
 
 RUN chmod 500 /usr/local/bin/filebackup.sh
 
-CMD ["/bin/sh", "filebackup.sh"]
