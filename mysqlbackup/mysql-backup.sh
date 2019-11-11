@@ -1,4 +1,4 @@
-#/usr/bin/env
+#/usr/bin/env bash
 
 # 2019 jan.peschke@innovo-cloud.de
 # - take a simple db dump 
@@ -69,7 +69,7 @@ else echo "Could not find mysqldump util"
   exit 1
 fi
 
-bacckup(){
+backup(){
 mkdir /root/backup
 if mysqldump -h"${MYSQL_HOST}" -p"${MYSQL_PASSWORD}" -u"${MYSQL_USER}" "${MYSQL_DB}" > /root/backup/bigdump.sql ; then
   echo "prepared a new dump, try to sync to s3://${S3_BUCKET}"

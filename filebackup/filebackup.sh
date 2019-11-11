@@ -1,7 +1,9 @@
-#/usr/bin/env
+#/usr/bin/env bash
 
 # 2019 jan.peschke@innovo-cloud.de
 # - sync a given directory to a given s3 bucket
+# - or restore from that s3 bucket
+
 
 
 if [ -z "${S3_BUCKET}"  ]; then
@@ -40,9 +42,27 @@ else echo "did not get valid s3 credentials..."
   exit 1
 fi
 
+backup(){
 echo "preparing to sync ${FILESTORAGE} to s3://${S3_BUCKET}"
 while true; do 
  s3cmd --access_key=${S3_KEY} --secret_key=${S3_SECRET} sync ${FILESTORAGE} s3://${S3_BUCKET}/filestorage/
  sleep 180
 done
+}
+
+restore(){
+ s3cmd --access_key=${S3_KEY} --secret_key=${S3_SECRET} sync s3://${S3_BUCKET}/filestorage/ ${FILESTORAGE}/
+}
+
+case "$1" in
+  --restore)
+  restore
+  ;;
+  --backup)
+  backup
+  ;;
+  *)
+  backup
+  ;;
+esac
 
