@@ -53,7 +53,14 @@ done
 }
 
 restore(){
- s3cmd --access_key=${S3_KEY} --secret_key=${S3_SECRET} sync s3://${S3_BUCKET}/filestorage/ ${FILESTORAGE}/
+ if [ -z "$1" ]; then
+   filedump=$(s3cmd ls s3://${S3_BUCKET}/filestorage/ | tail -1 | awk '{ print $4 }') 
+ else
+   filedump="$1"
+ fi
+ s3cmd --access_key=${S3_KEY} --secret_key=${S3_SECRET} get s3://${S3_BUCKET}/filestorage/${filedump} ${FILESTORAGE}/
+ rm -r ${FILESTORAGE}/*
+ tar -xzf /root/${filedump} -C / && rm /root/${filedump}
 }
 
 case "$1" in

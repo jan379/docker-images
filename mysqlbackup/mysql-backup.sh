@@ -78,12 +78,16 @@ fi
 }
 
 restore(){
-mkdir /root/backup
-dbdump=$(s3cmd ls s3://${S3_BUCKET}/database/ | tail -1 | awk '{ print $4 }')
-s3cmd get ${dbdump} /root/backup/recoverydump.sql
-if mysql -h"${MYSQL_HOST}" -p"${MYSQL_PASSWORD}" -u"${MYSQL_USER}" "${MYSQL_DB}" < /root/backup/recoverydump.sql ; then
-  echo "successfully restored mysql database from s3://${S3_BUCKET}"
-fi
+  mkdir /root/backup
+  if [ -z "$1" ]; then
+    dbdump=$(s3cmd ls s3://${S3_BUCKET}/database/ | tail -1 | awk '{ print $4 }')
+  else
+    dbdump="$1"
+  fi
+  s3cmd get ${dbdump} /root/backup/recoverydump.sql
+  if mysql -h"${MYSQL_HOST}" -p"${MYSQL_PASSWORD}" -u"${MYSQL_USER}" "${MYSQL_DB}" < /root/backup/recoverydump.sql ; then
+    echo "successfully restored mysql database from s3://${S3_BUCKET}"
+  fi
 }
 
 case "$1" in
