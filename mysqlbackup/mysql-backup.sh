@@ -71,7 +71,7 @@ fi
 
 backup(){
 mkdir /root/backup
-if mysqldump -h"${MYSQL_HOST}" -p"${MYSQL_PASSWORD}" -u"${MYSQL_USER}" "${MYSQL_DB}" > /root/backup/bigdump.sql ; then
+if mysqldump -h"${MYSQL_HOST}" -p"${MYSQL_PASSWORD}" -u"${MYSQL_USER}" "${MYSQL_DB}" > /root/backup/${MYSQL_DB}-$(date +%F-%H-%M).sql ; then
   echo "prepared a new dump, try to sync to s3://${S3_BUCKET}"
   s3cmd --access_key=${S3_KEY} --secret_key=${S3_SECRET} sync /root/backup/ s3://${S3_BUCKET}/database/
 fi
@@ -79,8 +79,9 @@ fi
 
 restore(){
 mkdir /root/backup
-s3cmd --access_key=${S3_KEY} --secret_key=${S3_SECRET} sync s3://${S3_BUCKET}/database/ /root/backup/
-if mysql -h"${MYSQL_HOST}" -p"${MYSQL_PASSWORD}" -u"${MYSQL_USER}" "${MYSQL_DB}" < /root/backup/bigdump.sql ; then
+dbdump=$(s3cmd ls s3://${S3_BUCKET}/database/ | tail -1 | awk '{ print $4 }')
+s3cmd get ${dbdump} /root/backup/recoverydump.sql
+if mysql -h"${MYSQL_HOST}" -p"${MYSQL_PASSWORD}" -u"${MYSQL_USER}" "${MYSQL_DB}" < /root/backup/recoverydump.sql ; then
   echo "successfully restored mysql database from s3://${S3_BUCKET}"
 fi
 }
