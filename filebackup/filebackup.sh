@@ -58,7 +58,7 @@ restore(){
  else
    filedump="$1"
  fi
- s3cmd --access_key=${S3_KEY} --secret_key=${S3_SECRET} get s3://${S3_BUCKET}/filestorage/${filedump} ${FILESTORAGE}/
+ s3cmd --access_key=${S3_KEY} --secret_key=${S3_SECRET} get s3://${S3_BUCKET}/filestorage/${filedump} /root/${filedump}
  rm -r ${FILESTORAGE}/*
  tar -xzf /root/${filedump} -C / && rm /root/${filedump}
 }
