@@ -54,13 +54,13 @@ done
 
 restore(){
  if [ -z "$1" ]; then
-   filedump=$(s3cmd ls s3://${S3_BUCKET}/filestorage/ | tail -1 | awk '{ print $4 }') 
+   filedump=$(s3cmd --access_key=${S3_KEY} --secret_key=${S3_SECRET} ls s3://${S3_BUCKET}/filestorage/ | tail -1 | awk '{ print $4 }') 
  else
    filedump="$1"
  fi
- s3cmd --access_key=${S3_KEY} --secret_key=${S3_SECRET} get s3://${S3_BUCKET}/filestorage/${filedump} /root/${filedump}
+ s3cmd --access_key=${S3_KEY} --secret_key=${S3_SECRET} get s3://${S3_BUCKET}/filestorage/${filedump} /root/recoverydump.tar.gz
  rm -r ${FILESTORAGE}/*
- tar -xzf /root/${filedump} -C / && rm /root/${filedump}
+ tar -xzf /root/recoverydump.tar.gz -C / && rm /root/recoverydump.tar.gz
 }
 
 case "$1" in
