@@ -80,7 +80,7 @@ fi
 restore(){
   mkdir /root/backup
   if [ -z "$1" ]; then
-    dbdump=$(s3cmd ls s3://${S3_BUCKET}/database/ | tail -1 | awk '{ print $4 }')
+    dbdump=$(s3cmd --access_key=${S3_KEY} --secret_key=${S3_SECRET} ls s3://${S3_BUCKET}/database/ | tail -1 | awk '{ print $4 }')
   else
     dbdump="$1"
   fi
