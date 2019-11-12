@@ -84,7 +84,7 @@ restore(){
   else
     dbdump="$1"
   fi
-  s3cmd get ${dbdump} /root/backup/recoverydump.sql
+  s3cmd --access_key=${S3_KEY} --secret_key=${S3_SECRET} get ${dbdump} /root/backup/recoverydump.sql
   if mysql -h"${MYSQL_HOST}" -p"${MYSQL_PASSWORD}" -u"${MYSQL_USER}" "${MYSQL_DB}" < /root/backup/recoverydump.sql ; then
     echo "successfully restored mysql database from s3://${S3_BUCKET}"
   fi
