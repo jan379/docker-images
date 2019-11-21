@@ -56,6 +56,7 @@ restore(){
  if [ -z "$1" ]; then
    filedump=$(s3cmd --access_key=${S3_KEY} --secret_key=${S3_SECRET} ls s3://${S3_BUCKET}/filestorage/ | tail -1 | awk '{ print $4 }') 
  else
+   echo "No restore target given, using last available backup..."
    filedump="$1"
  fi
  s3cmd --access_key=${S3_KEY} --secret_key=${S3_SECRET} get ${filedump} /root/recoverydump.tar.gz
