@@ -46,9 +46,10 @@ backup(){
 echo "preparing to sync ${FILESTORAGE} to s3://${S3_BUCKET}"
 while true; do 
  archivename=filebackup-$(date +%F-%H-%M).tar.gz
- tar -czvf /root/${archivename} ${FILESTORAGE}
+ #tar -czvf /root/${archivename} ${FILESTORAGE}
+ tar -czf /root/${archivename} ${FILESTORAGE}
  s3cmd --access_key=${S3_KEY} --secret_key=${S3_SECRET} put /root/${archivename} s3://${S3_BUCKET}/filestorage/ && rm /root/${archivename}
- sleep 600
+ sleep 3600
 done
 }
 
