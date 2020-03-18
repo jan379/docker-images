@@ -92,7 +92,7 @@ restore(){
 
 case "$1" in
   --restore)
-  restore
+  restore "$2"
   ;;
   --backup)
   backup
